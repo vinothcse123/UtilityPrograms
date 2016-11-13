@@ -17,15 +17,10 @@ int getInt()
 void getString(char *p_outputString)
 {
 	if(!p_outputString)
-		return;
-		
+		return;	
 	
-	
-	if (fgets(p_outputString, MAX_STRING_BUF_SIZE, stdin)) {
-		return "";
-	}	
-	
-	return  "";
+	fgets(p_outputString, MAX_STRING_BUF_SIZE, stdin);	
+	return ;
 }
 
 
