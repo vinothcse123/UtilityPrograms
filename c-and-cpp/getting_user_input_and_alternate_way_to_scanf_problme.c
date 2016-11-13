@@ -18,11 +18,19 @@ int getInt()
 void getString(char *p_outputString,int p_len=MAX_SINGLE_LINE_BUFFER_LENGTH)
 {	
 	
-	if(!p_outputString)
+		if(!p_outputString)
 		return;	
 		
 	memset(p_outputString,0,MAX_SINGLE_LINE_BUFFER_LENGTH*sizeof(char));	
 	fgets(p_outputString, p_len, stdin);	
+	
+	char *l_pos=strchr(p_outputString,'\n');
+	int l_numericPos=l_pos-p_outputString;
+	if(NULL != l_pos)
+	{
+		*(p_outputString+l_numericPos)='\0';
+	}
+	
 	return ;
 }
 
