@@ -14,12 +14,15 @@ int getInt()
 }
 
 
-void getString(char *p_outputString)
-{
+
+void getString(char *p_outputString,int p_len=MAX_SINGLE_LINE_BUFFER_LENGTH)
+{	
+	
 	if(!p_outputString)
 		return;	
-	
-	fgets(p_outputString, MAX_STRING_BUF_SIZE, stdin);	
+		
+	memset(p_outputString,0,MAX_SINGLE_LINE_BUFFER_LENGTH*sizeof(char));	
+	fgets(p_outputString, p_len, stdin);	
 	return ;
 }
 
