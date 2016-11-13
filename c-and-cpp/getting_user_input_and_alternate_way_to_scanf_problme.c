@@ -1,4 +1,5 @@
 #include<stdio.h>
+#define MAX_STRING_BUF_SIZE 1000
 
 int getInt()
 {
@@ -13,8 +14,22 @@ int getInt()
 }
 
 
+void getString(char *p_outputString)
+{
+	if(!p_outputString)
+		return;
+		
+	
+	
+	if (fgets(p_outputString, MAX_STRING_BUF_SIZE, stdin)) {
+		return "";
+	}	
+	
+	return  "";
+}
+
+
 int main()
 {
 	printf("%d",getInt());
 }
-
