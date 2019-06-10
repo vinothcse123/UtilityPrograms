@@ -1,0 +1,5 @@
+SELECT * FROM SYS.TABLES WHERE NAME LIKE '%TRAD%'
+
+select * from sys.columns where object_id=614865853 and system_type_id=56
+d
+SELECT * FROM SYS.COLUMNS WHERE OBJECT_ID=2105058535 AND COLUMN_ID=174
