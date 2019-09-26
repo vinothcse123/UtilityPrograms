@@ -1,3 +1,6 @@
+#use for .basrc
+alias vbash='. /mnt/c/Users/gavi9006/Google\ Drive/V6\ Official/etc\ -\ off/V6LinuxInit.sh'
+
 alias c=clear
 alias ..="cd ../"
 export PS1='\u@\h: '
