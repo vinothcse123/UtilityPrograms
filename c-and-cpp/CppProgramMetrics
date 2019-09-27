@@ -21,7 +21,7 @@ public:
 	void stopCpuTime()
 	{
 		m_endCpuTime = clock();
-		m_totalCpuTime = m_endCpuTime-m_startCpuTime;
-		std::cout << "CPU Time :" << m_totalCpuTime/CLOCKS_PER_SEC << " seconds" << std::endl;
+		m_totalCpuTime = (m_endCpuTime-m_startCpuTime)/CLOCKS_PER_SEC;
+		std::cout << "CPU Time :" << m_totalCpuTime << " seconds" << std::endl;
 	}
 };
