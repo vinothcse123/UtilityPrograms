@@ -1,0 +1,27 @@
+class CppProgramMetrics
+{
+private:
+	clock_t m_startCpuTime, m_endCpuTime;
+
+public:
+	unsigned long long m_totalCpuTime;
+
+	CppProgramMetrics()
+	{
+		m_totalCpuTime = 0;
+		m_startCpuTime = 0;
+		m_endCpuTime = 0;
+	}
+
+	void startCpuTime()
+	{
+		m_startCpuTime = clock();
+	}
+
+	void stopCpuTime()
+	{
+		m_endCpuTime = clock();
+		m_totalCpuTime = m_endCpuTime-m_startCpuTime;
+		std::cout << "CPU Time :" << m_totalCpuTime/CLOCKS_PER_SEC << " seconds" << std::endl;
+	}
+};
