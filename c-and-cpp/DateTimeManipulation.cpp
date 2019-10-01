@@ -1,6 +1,8 @@
 
 #include <iostream>
 #include <chrono>
+#include <string>
+
 
 
 
@@ -30,7 +32,7 @@ public:
 		struct tm * timeinfo;
 		timeinfo = localtime(&m_rawTime);
 		char buffer[80];
-		strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeinfo);
+		strftime(buffer, sizeof(buffer), "%Y_%m_%d_%H_%M_%S", timeinfo);
 		return std::string(buffer);
 	}
 };
@@ -38,5 +40,6 @@ public:
 int main()
 {
 	DateTimeManipulation obj;
-	obj.printDateTime();
+	
+	std::cout << obj.printDateTimeWithUnderscore() << std::endl;
 }
