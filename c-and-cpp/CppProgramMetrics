@@ -5,8 +5,11 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
+/* ================ Start of Metrics measurement code ==================*/
+
 /*
-Currently it is supported for linux, for others os it is not supported
+Currently it is supported for linux, for others os it is not supported.
+In order for easy copying to measure metrics, all class definitions are handled in single file 
 */
 
 class ElapsedTime
@@ -168,6 +171,9 @@ public:
         memMetrics.printMemoryUsageInKb();
     }
 };
+
+/* ================ End of Metrics measurement code ==================*/
+
 
 // Driver function
 int main()
