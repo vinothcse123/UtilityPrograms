@@ -123,10 +123,10 @@ private:
     struct rusage cpuResUsage;
 
     ///@brief start and end time of cpu
-    clock_t m_startCpuTime, m_endCpuTime;
+    double m_startCpuTime, m_endCpuTime;
 
     ///@brief total cpu time
-    unsigned long long m_totalCpuTime;
+    long double  m_totalCpuTime;
 
     ///@brief message to display
     std::string m_descriptionStr;
@@ -179,7 +179,7 @@ public:
     ///@return   None
     void start()
     {
-        m_startCpuTime = clock();
+        m_startCpuTime = getUserCpuTimeInSeconds();
     }
 
     ///@brief    Starts the cpu time when this function is called
@@ -188,16 +188,15 @@ public:
     void start(const std::string &descriptionStr)
     {
         m_descriptionStr = descriptionStr;
-        m_startCpuTime = clock();
+        m_startCpuTime = getUserCpuTimeInSeconds();
     }
 
     ///@brief    stops the cpu time calculation when this function is called
     ///@return   None
     void stop()
     {
-        m_endCpuTime = clock();
-        m_totalCpuTime = (m_endCpuTime - m_startCpuTime) / CLOCKS_PER_SEC;
-        std::cout << "CPU Time [ " << m_descriptionStr << " ] : " << m_totalCpuTime << " seconds" << '\n';
+        m_endCpuTime = getUserCpuTimeInSeconds();
+        std::cout << "CPU Time [ " << m_descriptionStr << " ] : " << m_endCpuTime << " seconds" << '\n';
     }
 };
 
@@ -233,6 +232,8 @@ public:
 // Driver function
 int main()
 {
+     CppCpuMetrics cpuMetrics;
+    cpuMetrics.start("DEMO");
 
     CppProgramMetrics mainPgmMetrics;
     mainPgmMetrics.start("Main Elapsed Time");
@@ -259,4 +260,15 @@ int main()
     elapTimeAcc.stopAccumulate();
 
     elapTimeAcc.printTime();
+
+
+   
+    int sum=0;
+        for(int i=0;i<10000;i++)
+        sum=sum+i;
+
+    std::cout << sum << '\n';
+            
+    cpuMetrics.stop();
+    
 }
