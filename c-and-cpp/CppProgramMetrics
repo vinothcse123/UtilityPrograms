@@ -25,7 +25,7 @@ public:
     std::chrono::time_point<std::chrono::steady_clock> begin, end;
 
     ///@brief elapsed time
-    unsigned long int m_elapsedTime;
+    double m_elapsedTime;
 
     ///@brief    start capturing elapsed time
     ///@return   None
@@ -64,7 +64,7 @@ public:
     ///@return   None
     void printTime()
     {
-        std::cout << "Elapsed time[" << m_startMsg << "](microseconds): " << m_elapsedTime << '\n';
+        std::cout << std::fixed << "Elapsed time[" << m_startMsg << "](seconds): " << m_elapsedTime << '\n';
     }
 
     ///@brief    stop capturing elapsed time and print values
@@ -72,8 +72,12 @@ public:
     void stop()
     {
         end = std::chrono::steady_clock::now();
-        m_elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-        std::cout << "Elapsed time[" << m_startMsg << "](microseconds): " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
+        std::chrono::duration<double> timeTaken = end - begin;
+
+        m_elapsedTime += timeTaken.count();
+        
+
+        std::cout<< std::fixed << "Elapsed time[" << m_startMsg << "](seconds): " << timeTaken.count() << '\n';
     }
 
     ///@brief    stopAccumulate the elapsed time and print values
@@ -81,7 +85,9 @@ public:
     void stopAccumulate()
     {
         end = std::chrono::steady_clock::now();
-        m_elapsedTime += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+        std::chrono::duration<double> timeTaken = end - begin;
+        m_elapsedTime += timeTaken.count();
+
     }
 
     ///@brief    destructor
@@ -236,4 +242,21 @@ int main()
     }
 
     mainPgmMetrics.stop();
+
+
+    ElapsedTime elapTime;
+    elapTime.start("Demo");
+   std::this_thread::sleep_for(std::chrono::microseconds(1000));
+    elapTime.stop();
+
+    ElapsedTime elapTimeAcc;
+    elapTimeAcc.startAccumulate("Demo Acc");
+    std::this_thread::sleep_for(std::chrono::microseconds(1000));
+    elapTimeAcc.stopAccumulate();
+
+    elapTimeAcc.startAccumulate("Demo Acc");
+    std::this_thread::sleep_for(std::chrono::microseconds(1000));
+    elapTimeAcc.stopAccumulate();
+
+    elapTimeAcc.printTime();
 }
