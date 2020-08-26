@@ -123,7 +123,7 @@ private:
     struct rusage cpuResUsage;
 
     ///@brief start and end time of cpu
-    double m_startCpuTime, m_endCpuTime;
+    double  m_endCpuTime;
 
     ///@brief total cpu time
     long double  m_totalCpuTime;
@@ -138,7 +138,6 @@ public:
     ///@return   None
     CppCpuMetrics()
     {
-        m_startCpuTime = 0;
         m_endCpuTime = 0;
         m_totalCpuTime = 0;
     }
@@ -179,7 +178,6 @@ public:
     ///@return   None
     void start()
     {
-        m_startCpuTime = getUserCpuTimeInSeconds();
     }
 
     ///@brief    Starts the cpu time when this function is called
@@ -188,14 +186,13 @@ public:
     void start(const std::string &descriptionStr)
     {
         m_descriptionStr = descriptionStr;
-        m_startCpuTime = getUserCpuTimeInSeconds();
     }
 
     ///@brief    stops the cpu time calculation when this function is called
     ///@return   None
     void stop()
     {
-        m_endCpuTime = getUserCpuTimeInSeconds();
+        m_endCpuTime = getUserCpuTimeInSeconds() + getSystemCpuTimeInSeconds();
         std::cout << "CPU Time [ " << m_descriptionStr << " ] : " << m_endCpuTime << " seconds" << '\n';
     }
 };
