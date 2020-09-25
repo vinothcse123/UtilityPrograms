@@ -1,3 +1,4 @@
+import time
 
 class ElapsedTime:
     m_descriptionStr="ElasedTime"
@@ -22,12 +23,12 @@ class CpuTime:
     stopTime=0
 
     def start(self):
-        self.startTime=time.clock()
+        self.startTime=time.clock()*1000
     
     def start(self,descriptionStr):
         self.m_descriptionStr=descriptionStr
-        self.startTime=time.clock()
+        self.startTime=time.clock()*1000
 
     def stop(self):
-        self.stopTime=time.clock()
-        print("CPU TIME[%s] - %d seconds" %(self.m_descriptionStr,self.stopTime-self.startTime))
+        self.stopTime=time.clock()*1000
+        print("CPU TIME[%s] - %d milli seconds" %(self.m_descriptionStr,self.stopTime-self.startTime))
