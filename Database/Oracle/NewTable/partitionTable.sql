@@ -12,6 +12,11 @@ PARTITION RANGE_1_TO_100K VALUES LESS THAN (100000),
 PARTITION RANGE_200K_TO_200K VALUES LESS THAN (200000)
 );
 
+
+-- partioned index
+-- It creates partition index on table with partition info provided while creating table
+CREATE INDEX V6PlayPartition_idx ON V6PlayPartition(MyNumber) LOCAL;
+
 DROP TABLE V6PlayPartition;
 
 INSERT INTO V6PlayPartition (MyNumber,MyNumber2) VALUES(50,0);
