@@ -14,7 +14,6 @@ using namespace std;
 int main()
 {
     std::shared_ptr<arrow::io::ReadableFile> infile;
-    string source = "/RMS/nrsp/vinoth/sourceCode/v6AggMaster/apollo/apollo/cpp/test/data/parquetfiles/unitTestData_01.parquet";
     //V6P
     //string source = "vinoth.parquet";
 
