@@ -1,5 +1,5 @@
 --Global Temporary table
-CREATE GLOBAL TEMPORARY TABLE V6Play
+CREATE GLOBAL TEMPORARY TABLE V6PlayTempTable
 (
 MyNumber NUMBER,
 MyVarchar VARCHAR2(200),
