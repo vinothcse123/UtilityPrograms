@@ -8,6 +8,6 @@ myTimeStamp timestamp,
 myFloat NUMBER,
 MyNumber2 NUMBER
 )
-ON COMMIT PRESERVE ROWS;
+ON COMMIT PRESERVE ROWS; 
 
 
