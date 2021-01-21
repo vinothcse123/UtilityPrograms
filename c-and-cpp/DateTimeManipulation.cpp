@@ -1,10 +1,13 @@
 
+// GH_UP_CPP_4
+
 #include <iostream>
 #include <chrono>
 #include <string>
+#include <iomanip>
+#include <sstream>
 
-
-
+using std::string;
 
 class DateTimeManipulation
 {
@@ -12,9 +15,34 @@ class DateTimeManipulation
 
 public:
 
+    enum class Format_t
+    {
+        YYYYMMDDHHMMSS=1,
+    };
+
 	DateTimeManipulation()
 	{
 		m_rawTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	}
+
+    DateTimeManipulation(const Format_t& format,const string& strDateTime)
+	{
+        std::tm timeInfo ={};
+
+        switch(format)
+        {
+            case Format_t::YYYYMMDDHHMMSS:
+            std::istringstream ss(strDateTime);
+            ss >> std::get_time(&timeInfo, "%Y%m%d%H%M%S");
+
+            if (!ss.fail())
+                m_rawTime = mktime(&timeInfo);
+            
+            break;
+
+        }
+
+
 	}
 
 	void resetTime()
@@ -37,9 +65,23 @@ public:
 	}
 };
 
+
+void printCurrentDateTime()
+{
+    DateTimeManipulation obj;	
+	std::cout << obj.printDateTimeWithUnderscore() << std::endl;
+}
+
+
+void convertStrintToDateTime()
+{
+    DateTimeManipulation obj(DateTimeManipulation::Format_t::YYYYMMDDHHMMSS,"20200130102010");
+    std::cout << obj.printDateTimeWithUnderscore() << std::endl;
+}
+
 int main()
 {
-	DateTimeManipulation obj;
+    printCurrentDateTime();
+    convertStrintToDateTime();
 	
-	std::cout << obj.printDateTimeWithUnderscore() << std::endl;
 }
