@@ -4,8 +4,9 @@ MyNumber NUMBER,
 MyVarchar VARCHAR2(200),
 myDate date,
 myTimeStamp timestamp,
-myFloat NUMBER,
-MyNumber2 NUMBER
+myFloat NUMBER(10,6),
+MyNumber2 NUMBER,
+MyInteger NUMBER(10,0)
 );
 
 DROP TABLE V6Play;
