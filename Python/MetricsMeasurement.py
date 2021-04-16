@@ -1,4 +1,6 @@
 import time
+import os, psutil
+
 
 class ElapsedTime:
     m_descriptionStr="ElasedTime"
@@ -32,3 +34,15 @@ class CpuTime:
     def stop(self):
         self.stopTime=time.clock()*1000
         print("CPU TIME[%s] - %d milli seconds" %(self.m_descriptionStr,self.stopTime-self.startTime))
+
+       
+class MemoryUsage:
+
+    m_descriptionStr="MemoryUsage"
+    startTime=0
+    stopTime=0
+
+    def peakMemoryUsage(self):
+        process = psutil.Process(os.getpid())
+        memoryInBytes=process.memory_info().rss
+        print("PeakMemoryUsage(KB) %d"%(memoryInBytes/1024))
