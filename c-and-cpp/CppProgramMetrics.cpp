@@ -19,13 +19,57 @@ private:
     ///@brief Message for elapsed time
     std::string m_startMsg;
 
+     ///@brief   convertToReqUnit
+    ///@return   None
+    double convertToReqUnit()
+    {
+        switch(m_unit)
+        {
+            case Unit_t::SECONDS:
+            return m_elapsedTime;
+
+            case Unit_t::MILLISECONDS:
+            return m_elapsedTime*1000;
+
+        }
+
+        return -1;
+    }
+
+    std::string getUnitDesc()
+    {
+        switch(m_unit)
+        {
+            case Unit_t::SECONDS:
+            return "s";
+
+            case Unit_t::MILLISECONDS:
+            return "ms";
+
+        }
+
+        return "INVALID UNIT";
+    }
+
 public:
 
     ///@brief time point which holds the start and end time
     std::chrono::time_point<std::chrono::steady_clock> begin, end;
 
+    enum class Unit_t
+    {
+        SECONDS=0,
+        MILLISECONDS,
+    };
+
     ///@brief elapsed time
     double m_elapsedTime;
+
+    ///@brief unit
+    Unit_t m_unit=Unit_t::MILLISECONDS;
+
+    
+
 
     ///@brief    start capturing elapsed time
     ///@return   None
@@ -64,20 +108,21 @@ public:
     ///@return   None
     void printTime()
     {
-        std::cout << std::fixed << "Elapsed time[" << m_startMsg << "](seconds): " << m_elapsedTime << '\n';
+        std::cout << std::fixed << "Elapsed time[" << m_startMsg << "](" << getUnitDesc() << "): " << convertToReqUnit() << '\n';
     }
 
     ///@brief    stop capturing elapsed time and print values
     ///@return   None
-    void stop()
+    double stop()
     {
         end = std::chrono::steady_clock::now();
         std::chrono::duration<double> timeTaken = end - begin;
 
         m_elapsedTime += timeTaken.count();
         
+        printTime();
 
-        std::cout<< std::fixed << "Elapsed time[" << m_startMsg << "](seconds): " << timeTaken.count() << '\n';
+        return convertToReqUnit();
     }
 
     ///@brief    stopAccumulate the elapsed time and print values
