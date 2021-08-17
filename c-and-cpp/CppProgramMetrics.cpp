@@ -170,67 +170,134 @@ private:
     ///@brief start and end time of cpu
     double  m_endCpuTime;
 
+    ///@brief is thread cpu time
+    bool  m_isThreadCpuTime=false;
+
     ///@brief total cpu time
     long double  m_totalCpuTime;
+
+    ///@brief starting user cpu time
+    long double  m_startUserCpuTime=0;
+
+    ///@brief starting system cpu time
+    long double  m_startSysCpuTime=0;
+
+    ///@brief user cpu time
+    long double  m_userCpuTime=0;
+
+    ///@brief  system cpu time
+    long double  m_sysCpuTime=0;
+
 
     ///@brief message to display
     std::string m_descriptionStr;
 
     const int numberOfMicroSecInSec=1000000;
 
+     ///@brief   convertToReqUnit
+    ///@return   None
+    long double convertToReqUnit(const long double& dNumber)
+    {
+        switch(m_unit)
+        {
+            case Unit_t::SECONDS:
+            return dNumber;
+
+            case Unit_t::MILLISECONDS:
+            return dNumber*1000;
+
+        }
+
+        return -1;
+    }
+
+    std::string getUnitDesc()
+    {
+        switch(m_unit)
+        {
+            case Unit_t::SECONDS:
+            return "s";
+
+            case Unit_t::MILLISECONDS:
+            return "ms";
+
+        }
+
+        return "INVALID UNIT";
+    }
+
 public:
     ///@brief    constructor
+    ///@isThreadCpu - In case of multithreading and if we want to measure CPU consumed by current thread alone this has to be set as true
     ///@return   None
-    CppCpuMetrics()
+    CppCpuMetrics(const bool& isThreadCpu=false):
+    m_isThreadCpuTime(isThreadCpu)
     {
         m_endCpuTime = 0;
         m_totalCpuTime = 0;
     }
 
+    
+enum class Unit_t
+    {
+        SECONDS=0,
+        MILLISECONDS,
+    };
+
+    ///@brief unit
+    Unit_t m_unit=Unit_t::MILLISECONDS;
+
+
     ///@brief    Returns user cpu time from beginning of program to this point
     ///@return   double
     double getUserCpuTimeInSeconds()
-    {
-        getrusage(RUSAGE_SELF, &cpuResUsage);
+    {        
+        getrusage(m_isThreadCpuTime? RUSAGE_THREAD  : RUSAGE_SELF, &cpuResUsage);
         //tv_usec is microseconds, so dividing by 1000000
-        return (cpuResUsage.ru_utime.tv_sec + (cpuResUsage.ru_utime.tv_usec / static_cast<double>(numberOfMicroSecInSec)));
+        m_userCpuTime = convertToReqUnit(cpuResUsage.ru_utime.tv_sec + (cpuResUsage.ru_utime.tv_usec / static_cast<double>(numberOfMicroSecInSec))) - m_startUserCpuTime;
+
+        return m_userCpuTime;
     }
 
     ///@brief    print the user cpu time
     ///@return   None
     void printUserCpuTimeInSeconds()
     {
-        std::cout << "User CPU time(Seconds): " << getUserCpuTimeInSeconds() << '\n';
+        std::cout << "User CPU time(" << getUnitDesc() << "): " << getUserCpuTimeInSeconds() << '\n';
     }
 
     ///@brief    Returns system cpu time from beginning of program to this point
     ///@return   double
     double getSystemCpuTimeInSeconds()
     {
-        getrusage(RUSAGE_SELF, &cpuResUsage);
+
+        getrusage(m_isThreadCpuTime? RUSAGE_THREAD : RUSAGE_SELF, &cpuResUsage);
         //tv_usec is microseconds, so dividing by 1000000
-        return (cpuResUsage.ru_stime.tv_sec + (cpuResUsage.ru_stime.tv_usec / static_cast<double>(numberOfMicroSecInSec)));
+        m_sysCpuTime =  convertToReqUnit(cpuResUsage.ru_stime.tv_sec + (cpuResUsage.ru_stime.tv_usec / static_cast<double>(numberOfMicroSecInSec))) - m_startSysCpuTime;
+
+        return m_sysCpuTime;
     }
 
     ///@brief    printSystemCpuTimeInSeconds
     ///@return   None
     void printSystemCpuTimeInSeconds()
     {
-        std::cout << "System CPU time(Seconds): " << getSystemCpuTimeInSeconds() << '\n';
-    }
-
-    ///@brief    Starts the cpu time when this function is called
-    ///@return   None
-    void start()
-    {
+        std::cout << "System CPU time(" << getUnitDesc() << "): " << getSystemCpuTimeInSeconds() << '\n';
     }
 
     ///@brief    Starts the cpu time when this function is called
     ///@param descriptionStr : descriptionStr
     ///@return   None
-    void start(const std::string &descriptionStr)
+    void start(const std::string &descriptionStr="")
     {
+        m_startUserCpuTime=getUserCpuTimeInSeconds();
+        m_startSysCpuTime=getSystemCpuTimeInSeconds();
+
+
         m_descriptionStr = descriptionStr;
+        m_endCpuTime=0;
+        m_sysCpuTime=0;
+        m_sysCpuTime=0;
     }
 
     ///@brief    stops the cpu time calculation when this function is called
@@ -238,7 +305,7 @@ public:
     void stop()
     {
         m_endCpuTime = getUserCpuTimeInSeconds() + getSystemCpuTimeInSeconds();
-        std::cout << "CPU Time [ " << m_descriptionStr << " ] : " << m_endCpuTime << " seconds" << '\n';
+        std::cout << "CPU Time [ " << m_descriptionStr << " ] : " << m_endCpuTime << " " <<getUnitDesc() << '\n';
     }
 };
 
@@ -257,13 +324,13 @@ public:
     void start(std::string metricsName)
     {
         elapsedObj.start(metricsName);
+        cpuMetrics.start(metricsName);
     }
 
     void stop()
     {
         elapsedObj.stop();
-        cpuMetrics.printUserCpuTimeInSeconds();
-        cpuMetrics.printSystemCpuTimeInSeconds();
+        cpuMetrics.stop();
         memMetrics.printMemoryUsageInKb();
     }
 };
@@ -274,11 +341,11 @@ public:
 // Driver function
 int main()
 {
-     CppCpuMetrics cpuMetrics;
-    cpuMetrics.start("DEMO");
+    CppCpuMetrics cpuMetrics;
+    cpuMetrics.start("CpuMetrics");
 
     CppProgramMetrics mainPgmMetrics;
-    mainPgmMetrics.start("Main Elapsed Time");
+    mainPgmMetrics.start("ProgramMetrics");
 
     {
         // Main code goes here
@@ -306,8 +373,12 @@ int main()
 
    
     int sum=0;
-        for(int i=0;i<10000;i++)
+    std::string s="Hai";
+        for(int i=0;i<1000000;i++)
+        {
         sum=sum+i;
+        s += "HELLO";
+        }
 
     std::cout << sum << '\n';
             
