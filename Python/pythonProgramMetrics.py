@@ -35,6 +35,10 @@ class CpuTime:
         self.stopTime=time.clock()*1000
         print("CPU TIME[%s] - %d milli seconds" %(self.m_descriptionStr,self.stopTime-self.startTime))
 
+    def printCpuTime(self):
+        p = psutil.Process(os.getpid())
+        print("All Info in scputimes in seconds")
+        print(p.cpu_times())
        
 class MemoryUsage:
 
