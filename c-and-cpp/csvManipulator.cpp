@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <iostream>
+#include <stdexcept>
 
 using std::cout;
 using std::string;
@@ -86,11 +88,16 @@ class CsvManipulator
 private:
     std::vector<CsvRow> m_rows;
     std::string m_delimitter=",";
+    CsvRow m_headerRow;
+    int m_columnCount=0;
+    bool m_isHeaderPresent=false;
 
 public:
-    CsvManipulator(const std::string &strFileName)
+    CsvManipulator(const std::string &strFileName,bool isHeaderPresent=false)
     {
         std::ifstream csvFileStream(strFileName);
+        bool isFirstRow=true;
+        m_isHeaderPresent=isHeaderPresent;
 
         std::string strRow;
 
@@ -102,10 +109,25 @@ public:
 
             for (auto token : stringTok.getTokens(strRow, m_delimitter))
             {
-                csvRow.m_colDataVec.push_back(token);
+                if(isHeaderPresent && isFirstRow)
+                    m_headerRow.m_colDataVec.push_back(token);
+                else
+                    csvRow.m_colDataVec.push_back(token);
             }
-
-            m_rows.push_back(csvRow);
+            
+            if(isHeaderPresent && isFirstRow)
+                m_columnCount=m_headerRow.m_colDataVec.size();
+            else if(isHeaderPresent)
+                m_columnCount=csvRow.m_colDataVec.size();
+            
+            if(!isFirstRow)
+                if(m_columnCount != csvRow.m_colDataVec.size())
+                    throw std::runtime_error("Column count mismatch");
+            
+            if(!(isHeaderPresent && isFirstRow))
+                m_rows.push_back(csvRow);
+                
+            isFirstRow=false;
         }
     }
 
@@ -128,11 +150,33 @@ public:
 
     CsvRow getRowBasedOnKey(int searchColumnId,std::string strSearchKey)
     {
+
+
+        if(searchColumnId > m_columnCount)
+            throw std::runtime_error("getRowBasedOnKey: Search column id Total column count");
+
         for (auto &csvRow : m_rows)
         {
+
             if(csvRow.m_colDataVec.at(searchColumnId) == strSearchKey)
                 return csvRow;
         }
+
+        if(searchColumnId > m_columnCount)
+            throw std::runtime_error("getRowBasedOnKey: Row not found");
+
+    }
+
+    int getColumnIndexByHeaderName(string strHeaderName)
+    {
+        if(!m_isHeaderPresent)
+            throw std::runtime_error("Header is not enabled");
+ 
+        for(int columnIndex=0; columnIndex<m_columnCount; columnIndex++)
+            if(strHeaderName == m_headerRow.m_colDataVec.at(columnIndex))
+                return columnIndex;
+
+        throw std::runtime_error("Column header not found");
     }
 };
 
@@ -145,14 +189,14 @@ void readAndUpdateCsvFile()
 
 void getCsvRowBasedOnSearchKey()
 {
-    CsvManipulator csvManip("myCsv.txt");
-    CsvRow searchRow = csvManip.getRowBasedOnKey(0,"12488");
+    CsvManipulator csvManip("myCsv.txt",true);
+    CsvRow searchRow = csvManip.getRowBasedOnKey(csvManip.getColumnIndexByHeaderName("COL1"),"37");
     std::cout << " searchRow.m_colDataVec[1] "<<  searchRow.m_colDataVec.at(1)  << "|" << std::endl;
 }
 
 int main()
 {
-    readAndUpdateCsvFile();
+    // readAndUpdateCsvFile();
 
     getCsvRowBasedOnSearchKey();
 
