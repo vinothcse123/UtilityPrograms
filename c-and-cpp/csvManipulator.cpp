@@ -85,7 +85,7 @@ class CsvManipulator
 {
 private:
     std::vector<CsvRow> m_rows;
-    std::string m_delimitter=";";
+    std::string m_delimitter=",";
 
 public:
     CsvManipulator(const std::string &strFileName)
@@ -125,12 +125,36 @@ public:
             m_csvFileStream << '\n';
         }
     }
+
+    CsvRow getRowBasedOnKey(int searchColumnId,std::string strSearchKey)
+    {
+        for (auto &csvRow : m_rows)
+        {
+            if(csvRow.m_colDataVec.at(searchColumnId) == strSearchKey)
+                return csvRow;
+        }
+    }
 };
+
+void readAndUpdateCsvFile()
+{
+    CsvManipulator csvManip("myCsv.txt");
+    csvManip.updateRecords("myCsv2.txt");
+}
+
+
+void getCsvRowBasedOnSearchKey()
+{
+    CsvManipulator csvManip("myCsv.txt");
+    CsvRow searchRow = csvManip.getRowBasedOnKey(0,"12488");
+    std::cout << " searchRow.m_colDataVec[1] "<<  searchRow.m_colDataVec.at(1)  << "|" << std::endl;
+}
 
 int main()
 {
-    int myNumber = -1;
+    readAndUpdateCsvFile();
 
-    CsvManipulator csvManip("myCsv.txt");
-    csvManip.updateRecords("myCsv2.txt");
+    getCsvRowBasedOnSearchKey();
+
+
 }
