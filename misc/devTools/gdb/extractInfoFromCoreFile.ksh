@@ -8,8 +8,8 @@ echo "Core File is $coreFileName"
 binaryNameFromCoreFile=`file "$coreFileName" | awk -F \' '{print $2}'`
 echo $binaryNameFromCoreFile
 
-
-gdb -q --args $binaryNameFromCoreFile arg1 -c $coreFileName \
+#Don't pass arguments of binary file
+gdb -q $binaryNameFromCoreFile -c $coreFileName \
 -ex "set pagination off" \
 -ex bt \
 -ex "thread apply all backtrace" \
