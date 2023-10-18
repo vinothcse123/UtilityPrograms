@@ -1,9 +1,10 @@
 ::INPUTS
 
-set sourcePath="C:\v6Drive\V6Backup\Source\DuplicateFolderWithExclude\Test"
+::Give some additional space at end of path in sourcePath. If there is space in path then give double quotes. If no space then don't give double quotes - windows 
+set sourcePath="C:\Users\gavi9006\OneDrive - VIN\ "
 
 
-set excludePath=C:\v6Drive\V6Backup\Source\DuplicateFolderWithExclude\Test\f1 C:\v6Drive\V6Backup\Source\DuplicateFolderWithExclude\Test\f2
+set excludePath="C:\Users\gavi9006\OneDrive - VIN\\f1 C:\Users\gavi9006\OneDrive - VIN\\f2"
 
 
 
@@ -29,4 +30,6 @@ mkdir %destinationPath%
 echo source path is %sourcePath%
 echo destinationPath path is %destinationPath%
 
-robocopy %sourcePath%  %destinationPath% /MIR /Z  /XF *.iso *.log *.au /XD  %excludePath%
+robocopy %sourcePath%  "%destinationPath% " /MIR /Z  /XF *.iso *.log *.au /XD  %excludePath%
+
+timeout /t 100
