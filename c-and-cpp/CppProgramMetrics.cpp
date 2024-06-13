@@ -7,12 +7,12 @@
 
 /* ================ Start of Metrics measurement code ==================*/
 
-#define ET_B(myArgument) ElapsedTime myArgument;myArgument.start(std::string(__FUNCTION__)+std::string(" : ")+std::string(#myArgument));
+#define ET_B(myArgument) v6Code::ElapsedTime myArgument;myArgument.start(std::string(__FUNCTION__)+std::string(" : ")+std::string(#myArgument));
 
 #define ET_E(myArgument) myArgument.stop();
 
 
-#define ET_ACC(myArgument) ElapsedTime myArgument;
+#define ET_ACC(myArgument) v6Code::ElapsedTime myArgument;
 #define ET_ACC_B(myArgument) myArgument.startAccumulate(std::string(__FUNCTION__)+std::string(" : ")+std::string(#myArgument));
 #define ET_ACC_E(myArgument) myArgument.stopAccumulate();
 #define ET_ACC_F(myArgument) myArgument.printTime();
