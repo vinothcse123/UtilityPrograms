@@ -7,9 +7,9 @@
 
 /* ================ Start of Metrics measurement code ==================*/
 
-#define ELAPSED_TIME_B(myArgument) ElapsedTime myArgument;myArgument.start(std::string(__FUNCTION__)+std::string(" : ")+std::string(#myArgument));
+#define ET_B(myArgument) ElapsedTime myArgument;myArgument.start(std::string(__FUNCTION__)+std::string(" : ")+std::string(#myArgument));
 
-#define ELAPSED_TIME_E(myArgument) myArgument.stop();
+#define ET_E(myArgument) myArgument.stop();
 
 
 
@@ -377,22 +377,17 @@ void cpuMetricsDemo()
 
 inline void elapsedTimeWithMacroDemo()
 {
-ELAPSED_TIME_B(L379);
-std::this_thread::sleep_for(std::chrono::microseconds(1000));
-ELAPSED_TIME_E(L379);
 
-
-ELAPSED_TIME_B(L385);
+ET_B(readingFromDb);
 std::this_thread::sleep_for(std::chrono::microseconds(1000));
-ELAPSED_TIME_E(L385);
+ET_E(readingFromDb);
 
 }
 
 // Driver function
 int main()
 {
+    elapsedTimeWithMacroDemo();
     elapsedTimeDemo();
     cpuMetricsDemo();
-    elapsedTimeWithMacroDemo();
-
 }
