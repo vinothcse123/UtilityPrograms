@@ -22,6 +22,8 @@
 Currently it is supported for linux, for others os it is not supported.
 In order for easy copying to measure metrics, all class definitions are handled in single file
 */
+namespace v6Code
+{
 
 ///@brief Computation of elapsed time of program
 class ElapsedTime
@@ -411,10 +413,12 @@ ET_ACC_F(computeReward)
 
 }
 
+}
+
 // Driver function
 int main()
 {
-    elapsedTimeWithMacroDemo();
-    elapsedTimeDemo();
-    cpuMetricsDemo();
+    v6Code::elapsedTimeWithMacroDemo();
+    v6Code::elapsedTimeDemo();
+    v6Code::cpuMetricsDemo();
 }
