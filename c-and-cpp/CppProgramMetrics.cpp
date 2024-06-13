@@ -12,6 +12,11 @@
 #define ET_E(myArgument) myArgument.stop();
 
 
+#define ET_ACC(myArgument) ElapsedTime myArgument;
+#define ET_ACC_B(myArgument) myArgument.startAccumulate(std::string(__FUNCTION__)+std::string(" : ")+std::string(#myArgument));
+#define ET_ACC_E(myArgument) myArgument.stopAccumulate();
+#define ET_ACC_F(myArgument) myArgument.printTime();
+
 
 /*
 Currently it is supported for linux, for others os it is not supported.
@@ -27,15 +32,18 @@ private:
 
     ///@brief   convertToReqUnit
     ///@return   None
-    double convertToReqUnit()
+     long double convertToReqUnit()
     {
         switch (m_unit)
         {
         case Unit_t::SECONDS:
-            return m_elapsedTime;
+            return m_elapsedTime/(1000*1000.0);
 
         case Unit_t::MILLISECONDS:
-            return m_elapsedTime * 1000;
+            return m_elapsedTime/(1000.0);
+
+        case Unit_t::MINS:
+            return m_elapsedTime/(1000*1000*60.0);
         }
 
         return -1;
@@ -46,10 +54,13 @@ private:
         switch (m_unit)
         {
         case Unit_t::SECONDS:
-            return "s";
+            return "seconds";
 
         case Unit_t::MILLISECONDS:
-            return "ms";
+            return "millisec";
+
+        case Unit_t::MINS:
+            return "Mins";
         }
 
         return "INVALID UNIT";
@@ -63,13 +74,14 @@ public:
     {
         SECONDS = 0,
         MILLISECONDS,
+        MINS,
     };
 
     ///@brief elapsed time
-    double m_elapsedTime;
+    unsigned long long m_elapsedTime;
 
     ///@brief unit
-    Unit_t m_unit = Unit_t::MILLISECONDS;
+    Unit_t m_unit = Unit_t::SECONDS;
 
     ///@brief    start capturing elapsed time
     ///@return   None
@@ -116,9 +128,8 @@ public:
     double stop()
     {
         end = std::chrono::steady_clock::now();
-        std::chrono::duration<double> timeTaken = end - begin;
 
-        m_elapsedTime += timeTaken.count();
+        m_elapsedTime += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
 
         printTime();
 
@@ -130,8 +141,8 @@ public:
     void stopAccumulate()
     {
         end = std::chrono::steady_clock::now();
-        std::chrono::duration<double> timeTaken = end - begin;
-        m_elapsedTime += timeTaken.count();
+
+        m_elapsedTime += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
     }
 
     ///@brief    destructor
@@ -378,9 +389,25 @@ void cpuMetricsDemo()
 inline void elapsedTimeWithMacroDemo()
 {
 
+//Capture time with single block
 ET_B(readingFromDb);
-std::this_thread::sleep_for(std::chrono::microseconds(1000));
+std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 ET_E(readingFromDb);
+
+
+//Accumulate time with single block
+ET_ACC(computeReward);
+
+ET_ACC_B(computeReward);
+std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+ET_ACC_E(computeReward);
+
+ET_ACC_B(computeReward);
+std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+ET_ACC_E(computeReward);
+
+//Finish
+ET_ACC_F(computeReward)
 
 }
 
