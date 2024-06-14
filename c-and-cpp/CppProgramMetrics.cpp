@@ -39,13 +39,13 @@ private:
         switch (m_unit)
         {
         case Unit_t::SECONDS:
-            return m_elapsedTime;
+            return m_elapsedTime/(1000*1000*1000.0);
 
         case Unit_t::MILLISECONDS:
-            return m_elapsedTime*1000.0;
+            return m_elapsedTime/(1000*1000.0);
 
         case Unit_t::MINS:
-            return m_elapsedTime/(60.0);
+            return m_elapsedTime/(1000*1000*1000*60.0);
         }
 
         return -1;
@@ -131,7 +131,7 @@ public:
     {
         end = std::chrono::steady_clock::now();
 
-        m_elapsedTime += std::chrono::duration_cast<std::chrono::duration<double>>(end - begin).count();
+        m_elapsedTime += std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
 
         printTime();
 
@@ -144,7 +144,7 @@ public:
     {
         end = std::chrono::steady_clock::now();
 
-        m_elapsedTime += std::chrono::duration_cast<std::chrono::duration<double>>(end - begin).count();
+        m_elapsedTime += std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
     }
 
     ///@brief    destructor
@@ -342,7 +342,7 @@ public:
 
 /* ================ End of Metrics measurement code ==================*/
 
-inline void elapsedTimeDemo()
+void elapsedTimeDemo()
 {
     ElapsedTime elapTime;
     elapTime.start("Demo");
@@ -361,7 +361,7 @@ inline void elapsedTimeDemo()
     elapTimeAcc.printTime();
 }
 
-inline void cpuMetricsDemo()
+void cpuMetricsDemo()
 {
     CppCpuMetrics cpuMetrics;
     cpuMetrics.start("CpuMetrics");
