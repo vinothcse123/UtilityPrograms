@@ -342,7 +342,7 @@ public:
 
 /* ================ End of Metrics measurement code ==================*/
 
-void elapsedTimeDemo()
+inline void elapsedTimeDemo()
 {
     ElapsedTime elapTime;
     elapTime.start("Demo");
@@ -361,7 +361,7 @@ void elapsedTimeDemo()
     elapTimeAcc.printTime();
 }
 
-void cpuMetricsDemo()
+inline  void cpuMetricsDemo()
 {
     CppCpuMetrics cpuMetrics;
     cpuMetrics.start("CpuMetrics");
