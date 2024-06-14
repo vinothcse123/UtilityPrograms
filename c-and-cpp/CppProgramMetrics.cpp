@@ -39,13 +39,13 @@ private:
         switch (m_unit)
         {
         case Unit_t::SECONDS:
-            return m_elapsedTime/(1000*1000.0);
+            return m_elapsedTime;
 
         case Unit_t::MILLISECONDS:
-            return m_elapsedTime/(1000.0);
+            return m_elapsedTime*1000.0;
 
         case Unit_t::MINS:
-            return m_elapsedTime/(1000*1000*60.0);
+            return m_elapsedTime/(60.0);
         }
 
         return -1;
@@ -131,7 +131,7 @@ public:
     {
         end = std::chrono::steady_clock::now();
 
-        m_elapsedTime += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+        m_elapsedTime += std::chrono::duration_cast<std::chrono::duration<double>>(end - begin).count();
 
         printTime();
 
@@ -144,7 +144,7 @@ public:
     {
         end = std::chrono::steady_clock::now();
 
-        m_elapsedTime += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+        m_elapsedTime += std::chrono::duration_cast<std::chrono::duration<double>>(end - begin).count();
     }
 
     ///@brief    destructor
